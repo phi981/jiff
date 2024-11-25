@@ -1,17 +1,28 @@
-const worker = new Worker('./web-worker.js');
-function connect(party_id) {
+/**
+ * Do not modify this file unless you have to.
+ * This file has UI handlers.
+ */
+// eslint-disable-next-line no-unused-vars
+function connect() {
   $('#connectButton').prop('disabled', true);
-  const computation_id = $('#computation_id').val();
-  const party_count = parseInt($('#count').val());
+  var computation_id = $('#computation_id').val();
+  var party_count = parseInt($('#count').val());
+  var party_id = parseInt($('#role').val()); // NOT IN TEMPLATE: party id is important to specify the role
 
   if (isNaN(party_count)) {
     $('#output').append("<p class='error'>Party count must be a valid number!</p>");
     $('#connectButton').prop('disabled', false);
   } else {
-    const options = { party_count: party_count, party_id: party_id };
+    var options = { party_count: party_count, party_id: party_id };
+    options.onError = function (_, error) {
+      $('#output').append("<p class='error'>"+error+'</p>');
+    };
+    options.onConnect = function () {
+      $('#button').attr('disabled', false); $('#output').append('<p>All parties Connected!</p>');
+    };
 
-    let hostname = window.location.hostname.trim();
-    let port = window.location.port;
+    var hostname = window.location.hostname.trim();
+    var port = window.location.port;
     if (port == null || port === '') {
       port = '80';
     }
@@ -19,43 +30,38 @@ function connect(party_id) {
       hostname = 'http://' + hostname;
     }
     if (hostname.endsWith('/')) {
-      hostname = hostname.substring(0, hostname.length - 1);
+      hostname = hostname.substring(0, hostname.length-1);
     }
     if (hostname.indexOf(':') > -1 && hostname.lastIndexOf(':') > hostname.indexOf(':')) {
       hostname = hostname.substring(0, hostname.lastIndexOf(':'));
     }
 
     hostname = hostname + ':' + port;
-
-    worker.postMessage({
-      type: 'init_' + String(party_id),
-      hostname: hostname,
-      computation_id: computation_id,
-      options: options
-    });
+    // eslint-disable-next-line no-undef
+    mpc.connect(hostname, computation_id, options);
   }
 }
-
-worker.onmessage = function (e) {
-  if ($('#output').is(':empty') && (e.data.type === 'result1' || e.data.type === 'result2')) {
-    for (let i = 0; i < e.data.result.length; i++) {
-      if (e.data.result[i] === 1) {
-        $('#output').append('<p>Substring found at index: ' + i + '.</p>');
-      }
-    }
-  }
-};
-
-function submit(party_id) {
-  $('#submit' + String(party_id)).attr('disabled', true);
-  const input = $('#inputText' + String(party_id)).val();
+// eslint-disable-next-line no-unused-vars
+function submit() {
+  var input = $('#input').val();
 
   if (input.length == null) {
     $('#output').append("<p class='error'>Input a valid string!</p>");
   } else {
-    worker.postMessage({
-      type: 'compute' + String(party_id),
-      input: input
-    });
+    $('#button').attr('disabled', true);
+    $('#output').append('<p>Starting...</p>');
+    // eslint-disable-next-line no-undef
+    var promise = mpc.compute(input);
+    promise.then(handleResult);
   }
+}
+
+function handleResult(results) {
+  for (var i = 0; i < results.length; i++) {
+    if (results[i] === 1) {
+      $('#output').append('<p>Substring found at index: ' + i + '.</p>');
+    }
+  }
+  $('#output').append('<p>Done</p><br/>');
+  $('#button').attr('disabled', false);
 }

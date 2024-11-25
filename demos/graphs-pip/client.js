@@ -16,6 +16,8 @@ window.onload = function () {
     yAxes: [{ ticks: { min: minY,  max: maxY } }],
     xAxes: [{ type: 'linear', position: 'bottom', ticks: { min: minX, max: maxX, maxTicksLimit: 20 } }]
   };
+
+  // eslint-disable-next-line no-undef
   myChart = new Chart(ctx, {
     type: 'line',
     data: { datasets: [
@@ -28,6 +30,7 @@ window.onload = function () {
   });
 };
 
+// eslint-disable-next-line no-unused-vars
 function addVertix() {
   var x = Number($('#inputX1').val());
   var y = Number($('#inputY1').val());
@@ -36,6 +39,7 @@ function addVertix() {
   $('#inputX1').val('');
   $('#inputY1').val('');
 
+  // eslint-disable-next-line no-undef
   var hull = geometry.convexHull(vertices);
   if (hull.length > 2) {
     hull.push(hull[0]);
@@ -56,6 +60,7 @@ function addVertix() {
   myChart.update();
 }
 
+// eslint-disable-next-line no-unused-vars
 function connect() {
   $('#connectButton').prop('disabled', true);
   var computation_id = $('#computation_id').val();
@@ -95,9 +100,11 @@ function connect() {
   }
 
   hostname = hostname + ':' + port;
+  // eslint-disable-next-line no-undef
   mpc.connect(hostname, computation_id, options);
 }
 
+// eslint-disable-next-line no-unused-vars
 function submitPoint() {
   $('#submit1Button').prop('disabled', true);
 
@@ -105,16 +112,21 @@ function submitPoint() {
   var y = Number($('#inputY2').val());
   var point = { x: x, y: y };
 
+  // eslint-disable-next-line no-undef
   var promise = mpc.compute(point);
   promise.then(displayResult);
 }
 
+// eslint-disable-next-line no-unused-vars
 function submitPolygon() {
   $('#submit2Button').prop('disabled', true);
 
+  // eslint-disable-next-line no-undef
   var hull = geometry.convexHull(vertices);
+  // eslint-disable-next-line no-undef
   hull = geometry.toBigNumber(hull);
 
+  // eslint-disable-next-line no-undef
   var promise = mpc.compute(hull);
   promise.then(displayResult);
 }

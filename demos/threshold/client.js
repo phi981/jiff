@@ -6,6 +6,7 @@ var upper_count;
 var lower_count;
 var jiff_instance;
 
+// eslint-disable-next-line no-unused-vars
 function connect() {
   $('#connectButton').prop('disabled', true);
   var computation_id = $('#computation_id').val();
@@ -40,6 +41,7 @@ function connect() {
 
     hostname = hostname + ':' + port;
 
+    // eslint-disable-next-line no-undef
     jiff_instance = mpc.connect(hostname, computation_id, options);
 
     var upper_parties = ['s1'];
@@ -53,6 +55,7 @@ function connect() {
   }
 }
 
+// eslint-disable-next-line no-unused-vars
 function submit() {
   var input = parseInt($('#number').val());
   var threshold = parseInt($('#threshold').val());
@@ -68,6 +71,7 @@ function submit() {
     $('#button').attr('disabled', true);
     $('#output').append('<p>Starting...</p>');
 
+    // eslint-disable-next-line no-undef
     var promise = mpc.compute({ value: input, threshold: threshold, upper_count: upper_count, lower_count: lower_count });
 
     // disconnect if you are a lower party
@@ -83,6 +87,7 @@ function submit() {
   }
 }
 
+// eslint-disable-next-line no-unused-vars
 function reconnect() {
   jiff_instance.connect();
 }

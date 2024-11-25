@@ -9,18 +9,18 @@
 console.log('Command line arguments: [/path/to/configuration/file.json]');
 
 // Server setup
-const express = require('express');
-const app = express();
-const http = require('http').Server(app);
-const path = require('path');
+var express = require('express');
+var app = express();
+var http = require('http').Server(app);
+var path = require('path');
 
 // body parser to handle json data
-const bodyParser  = require('body-parser');
+var bodyParser  = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 // Read configuration
-let config = './config.json';
+var config = './config.json';
 if (process.argv[2] != null) {
   config = './' + process.argv[2];
 }
@@ -29,9 +29,9 @@ console.log('Using config file: ', path.join(__dirname, config));
 config = require(config);
 
 // Keep track of assigned ids
-const assignedCompute = {};
-const assignedInput = {};
-const options = {
+var assignedCompute = {};
+var assignedInput = {};
+var options = {
   logs: true,
   hooks: {
     beforeInitialization: [
@@ -41,15 +41,15 @@ const options = {
           return params;
         }
 
-        let search = config.compute_parties;
-        let check = assignedCompute;
+        var search = config.compute_parties;
+        var check = assignedCompute;
         if (msg.role === 'input') {
           search = config.input_parties;
           check = assignedInput;
         }
 
-        for (let p = 0; p < search.length; p++) {
-          const id = search[p];
+        for (var p = 0; p < search.length; p++) {
+          var id = search[p];
           if (check[id] === true) {
             continue;
           }
@@ -66,14 +66,14 @@ const options = {
 };
 
 // Create the server
-const JIFFServer = require('../../lib/jiff-server');
-const jiffRestAPIServer = require('../../lib/ext/jiff-server-restful.js');
-const jiffServer = new JIFFServer(http, options);
+var JIFFServer = require('../../lib/jiff-server');
+var jiffRestAPIServer = require('../../lib/ext/jiff-server-restful.js');
+var jiffServer = new JIFFServer(http, options);
 jiffServer.apply_extension(jiffRestAPIServer, {app: app});
 
 // Serve static files.
 app.get('/config.js', function (req, res) {
-  let str = 'var config = \'' + JSON.stringify(config) + '\';\n';
+  var str = 'var config = \'' + JSON.stringify(config) + '\';\n';
   str += 'config = JSON.parse(config);';
   res.send(str);
 });

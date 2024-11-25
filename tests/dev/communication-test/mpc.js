@@ -11,12 +11,17 @@
     opt.Zp = 11;
 
     if (node) {
+      // eslint-disable-next-line no-global-assign,no-undef
       JIFFClient = require('../../../lib/jiff-client');
+      // eslint-disable-next-line no-global-assign,no-undef
       jiff_performance = require('../../../lib/ext/jiff-client-performance');
+      // eslint-disable-next-line no-global-assign,no-undef
       $ = require('jquery-deferred');
     }
 
+    // eslint-disable-next-line no-global-assign,no-undef
     saved_instance = new JIFFClient(hostname, computation_id, opt);
+    // eslint-disable-next-line no-undef
     saved_instance.apply_extension(jiff_performance);
 
     exports.saved_instance = saved_instance;
@@ -42,7 +47,7 @@
     var shares = jiff_instance.share(input);
     var i = 0;
     (function next() {
-      console.log(i + 1);
+      console.log(i+1);
       jiff_instance.start_barrier();
 
       for (var j = 0; j < 5; j++) {
@@ -58,10 +63,10 @@
           var promise = jiff_instance.open(shares[1]);
           promise.then(console.log).then(jiff_instance.disconnect);
           promise.then(final_deferred.resolve);
-        });
+        })
       }
-    })();
+    }());
 
     return final_promise;
   };
-})(typeof exports === 'undefined' ? (this.mpc = {}) : exports, typeof exports !== 'undefined');
+}((typeof exports === 'undefined' ? this.mpc = {} : exports), typeof exports !== 'undefined'));

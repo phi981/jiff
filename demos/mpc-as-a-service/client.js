@@ -1,3 +1,11 @@
+/**
+ * Do not modify this file unless you have to.
+ * This file has UI handlers.
+ */
+
+/* global config */
+
+// eslint-disable-next-line no-unused-vars
 function connect() {
   $('#connectButton').prop('disabled', true);
   var computation_id = $('#computation_id').val();
@@ -23,12 +31,14 @@ function connect() {
   }
 
   hostname = hostname + ':' + port;
+  // eslint-disable-next-line no-undef
   var jiff = mpc.connect(hostname, computation_id, options, config);
   jiff.wait_for(config.compute_parties, function () {
     $('#button').attr('disabled', false); $('#output').append('<p>Connected to the compute parties!</p>');
   });
 }
 
+// eslint-disable-next-line no-unused-vars
 function submit() {
   var input = parseInt($('#number').val());
 
@@ -39,6 +49,7 @@ function submit() {
   } else {
     $('#button').attr('disabled', true);
     $('#output').append('<p>Starting...</p>');
+    // eslint-disable-next-line no-undef
     var promise = mpc.compute(input);
     promise.then(handleResult);
   }

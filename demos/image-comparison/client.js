@@ -1,5 +1,10 @@
+/**
+ * Do not modify this file unless you have too
+ * This file has UI handlers.
+ */
 var Zp = 16777729;
 
+// eslint-disable-next-line no-unused-vars
 function connect() {
   $('#connectButton').prop('disabled', true);
   var computation_id = $('#computation_id').val();
@@ -33,6 +38,7 @@ function connect() {
     }
 
     hostname = hostname + ':' + port;
+    // eslint-disable-next-line no-undef
     mpc.connect(hostname, computation_id, options);
   }
 }
@@ -55,6 +61,7 @@ function hashImage(imgData) {
   return hash % Zp;
 }
 
+// eslint-disable-next-line no-unused-vars
 function submit() {
   $('#compareBtn').attr('disabled', true);
   var file = document.getElementById('fileUpload');
@@ -73,6 +80,7 @@ function submit() {
       base64 = hashImage(base64);
 
       // Begin MPC comparison
+      // eslint-disable-next-line no-undef
       var promise = mpc.compute(base64);
       promise.then(handleResult);
     };

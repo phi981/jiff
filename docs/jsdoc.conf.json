@@ -23,7 +23,7 @@
   },
   "opts": {
     "destination": "./docs/jsdoc/",
-    "template": "node_modules/docdash-with-dark-mode"
+    "template": "node_modules/docdash"
   },
   "docdash": {
     "collalpse": true,

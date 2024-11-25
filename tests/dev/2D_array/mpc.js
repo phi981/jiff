@@ -10,6 +10,7 @@
     var opt = Object.assign({}, options);
 
     if (node) {
+      // eslint-disable-next-line no-global-assign
       JIFFClient = require('../../../lib/jiff-client');
     }
 
@@ -25,13 +26,9 @@
       jiff_instance = saved_instance;
     }
 
-    var my_input = [
-      [1, 2, 3],
-      [2, 3, 4],
-      [3, 4, 5, 6]
-    ];
+    var my_input = [ [1, 2, 3], [2, 3, 4], [3, 4, 5, 6]];
 
-    var x = jiff_instance.share_2D_array(my_input, { 1: { rows: 3, cols: 3, 2: 4 }, 2: { rows: 3, cols: 2 } });
+    var x = jiff_instance.share_2D_array(my_input, { 1: { rows: 3, cols: 3, 2: 4 }, 2: { rows: 3, cols: 2 } } );
 
     return x.then(function (arrays) {
       try {
@@ -47,9 +44,9 @@
         }
 
         var parties = {
-          parties: [2], // default for all elements
-          0: { parties: [1] }, // for first row
-          2: { parties: [1, 2], 0: [1] } // last row, by default to 1, 2 except first element to 1 only.
+          parties: [ 2 ], // default for all elements
+          0: { parties: [ 1 ] }, // for first row
+          2: { parties: [ 1, 2 ], 0: [ 1 ] } // last row, by default to 1, 2 except first element to 1 only.
         };
 
         var op_ids = 'custom me';
@@ -60,4 +57,4 @@
       }
     });
   };
-})(typeof exports === 'undefined' ? (this.mpc = {}) : exports, typeof exports !== 'undefined');
+}((typeof exports === 'undefined' ? this.mpc = {} : exports), typeof exports !== 'undefined'));

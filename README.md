@@ -16,95 +16,34 @@ For browsers, we provide a bundle including the base client side library and its
 
 For node.js clients, npm install should install all the required dependencies.
 
-You can use browserify or similar tools to require JIFF via npm and bundle it with your browser-side JS.
-
 ## Installation
 
-Add JIFF as a dependency to your project:
+### Server
+
+Run npm from inside the project directory to automatically install the dependencies listed in `package.json`:
 ```shell
-npm install jiff-mpc
-```
-
-### Node.js
-
-After installing JIFF via npm, you can require the server module in your server
-code using:
-```javascript
-const { JIFFServer } = require('jiff-mpc');
-
-// create the JIFF server.
-const jiffServer = new JIFFServer(http, options);
-
-// listen for connections.
-http.listen(port, cb);
-```
-
-Similarly, you can require the client module in your node.js clients using:
-```javascript
-const { JIFFClient } = require('jiff-mpc');
-
-// create a jiff client.
-const jiffClient = new JIFFClient("<server address>", "<computation_id>", <options>);
-
-// perform some computation.
-let shares = jiffClient.share(<secret>);
-...
+npm install
 ```
 
 ### Client - Browser
 
-To use our bundle, include the provided pre-built JS file in a script tag. Make sure
-that you set up your web-server to serve this JS file.
+Make sure to include the library bundle:
 ```html
 <!-- exposes JIFFClient to the global scope -->
 <script src="/dist/jiff-client.js"></script>
 ```
-
 Then inside a script tag (and after the page loads), initialize a JIFF object and set up a computation:
 ```javascript
-const jiffClient = new JIFFClient("<server address>", "<computation_id>", <options>);
+var instance = new JIFFClient("http://localhost:8080", "<computation_id>", parties);
 ```
-The jiffClient object provides methods for sharing, opening, and performing operations on shares.
+The instance object provides methods for sharing, opening, and performing operations on shares.
 
-Alternatively, you can use the same code for both Node.js and browser-based clients, using tools
-such as [browserify](https://browserify.readthedocs.io/en/latest/readme/).
+### Client - node.js
 
-To do this, require JIFF from npm in your client JS code normally, e.g. using `const { JIFFClient } = require('jiff-mpc');`,
-and then build your JS code into a bundle using browserify. You can then serve that bundle
-via your web server, and include it in your HTML using script tags.
-
-To see an example of this, look at this [JIFF standalone example repo](https://github.com/multiparty/jiff-standalone-example).
-
-### Extensions
-
-If you want to support more complex data types, such as Fixedpoint numbers or infinite precision integers,
-you should apply the corresponding extension to your client and/or server JIFF instances.
-
-The extensions can be imported via npm, bundled into web clients via browserify, or included directly via
-script tags into the browser.
-
+In node.js you must include the library (either the bundle or the source) and then use it:
 ```javascript
-// Server
-const { JIFFServer, JIFFServerBigNumber } = require('jiff-mpc');
-const jiffServer = new JIFFServer(http, options);
-jiffServer.apply_extension(JIFFServerBigNumber);
-
-// Client using node.js or browserify.
-const { JIFFClient, JIFFClientBigNumber } = require('jiff-mpc');
-const jiffClient = new JIFFClient("<server address>", "<computation_id>", {
-  autoConnect: false,
-  <other options>
-});
-jiffClient.apply_extension(JIFFClientBigNumber, options);
-jiffClient.connect();
-```
-
-```html
-<!-- Plain JS without browserify -->
-<!-- include the extension and any of its dependencies directly using script tags -->
-<!-- make sure your web server serves these files at the corresponding URLs -->
-<script src="/bignumber.js/bignumber.min.js"></script>
-<script src="/lib/ext/jiff-client-bignumber.js"></script>
+var JIFFClient = require('./dist/jiff-client.js');
+var instance = new JIFFClient("http://localhost:8000", "<computation_id>", parties);
 ```
 
 ## Project Layout
@@ -136,7 +75,8 @@ Each document is an independent tutorial. However, beginners are encouraged to v
 
 Run a sample server from one of the demos under `demos` in the following way:
 ```shell
-node demos/<demo-name>/server.js
+node index.js demos/<demo-name>/server  # alternative way 1
+node demos/<demo-name>/server.js  # alternative way 2
 ```
 The output from the example server will direct you to open `localhost:8080/demos/<demo-name>/client.html` in a browser (you must open
 an instance in a separate window/tab for every distinct party participating in the protocol).
@@ -245,7 +185,7 @@ equivalent to 3-party computation with honest majority.
 Below is a table of the current costs of operations in the *base* JIFF without extensions:
 
 
-| Operation         | Rounds            | Total Messages                    | Preprocessing Rounds | Preprocessing Total Messages                 | Dependencies |
+| Operation         | Rounds            | Total Messages                    | Preprocessing Rounds | Preprocessing Total Messages                 | Dependenices |
 |-------------------|-------------------|-----------------------------------|----------------------|----------------------------------------------|--------------|
 | Share             | 1                 | senders \* receivers              | 0                    | 0                                            | N/A          |
 | Open              | 2                 | sender + sender \* receivers      | 1                    | senders \* senders                           | N/A          |
@@ -268,7 +208,7 @@ Some exact costs not shown in the table:
 4. Exact total number of messages for division is: bits \* ( 5\*(parties + parties^2 + (bits+1) \* (2\*parties + parties\*(parties-1))) + 2\*parties + parties\*(parties-1) + 2\*parties + parties\*(parties-1) )
 5. Exact total number of messages for constant division is: 1 + 7\*parties + 4\*parties^2 + 8\*(parties + parties^2 + (bits+1) \* (2\*parties + parties\*(parties-1)))
 
-Dependencies:
+Dependenices:
 1. Multiplication has one message to synchronize beaver triplets and one open in sequence.
 2. inequality tests has 3 less than half primes in parallel, each has an open and as many multiplication in sequence as bits.
 3. constant inequality test has 2 less than half primes in parallel.

@@ -55,6 +55,7 @@ baseGeneration.generateUniformNatural = function (test, options, max) {
   return BigNumber.random().times(max).floor();
 };
 
+
 // Override entry points
 var oldArithmetic = baseGeneration.generateArithmeticInputs;
 var oldConstantArithmetic = baseGeneration.generateConstantArithmeticInputs;

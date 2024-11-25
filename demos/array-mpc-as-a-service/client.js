@@ -1,14 +1,22 @@
-let worker = new Worker('./web-worker.js');
+/**
+ * Do not modify this file unless you have to.
+ * This file has UI handlers.
+ */
+
 /* global config */
 
-function connect(party_id) {
+// eslint-disable-next-line no-unused-vars
+function connect() {
   $('#connectButton').prop('disabled', true);
-  const computation_id = $('#computation_id').val();
+  var computation_id = $('#computation_id').val();
 
-  const options = { party_count: config.party_count };
+  var options = { party_count: config.party_count };
+  options.onError = function (_, error) {
+    $('#output').append("<p class='error'>"+error+'</p>');
+  };
 
-  let hostname = window.location.hostname.trim();
-  let port = window.location.port;
+  var hostname = window.location.hostname.trim();
+  var port = window.location.port;
   if (port == null || port === '') {
     port = '80';
   }
@@ -23,38 +31,44 @@ function connect(party_id) {
   }
 
   hostname = hostname + ':' + port;
-  worker.postMessage({
-    type: 'init_' + String(party_id),
-    hostname: hostname,
-    computation_id: computation_id,
-    options: options,
-    config: config
+  // eslint-disable-next-line no-undef
+  var jiff = mpc.connect(hostname, computation_id, options, config);
+  jiff.wait_for(config.compute_parties, function () {
+    $('#processButton').attr('disabled', false); $('#output').append('<p>Connected to the compute parties!</p>');
   });
 }
 
-function submit(party_id) {
-  const arr = JSON.parse(document.getElementById('inputText' + String(party_id)).value);
+// eslint-disable-next-line no-unused-vars
+function submit() {
+  var arr = JSON.parse(document.getElementById('inputText').value);
 
   if (arr.length !== config.input_length) {
     alert('Please input an array of length ' + config.input_length + '.');
     return;
   }
 
-  for (let i = 0; i < arr.length; i++) {
+  for (var i = 0; i < arr.length; i++) {
     if (typeof(arr[i]) !== 'number') {
       alert('Please input an array of integers.');
       return;
     }
   }
-  worker.postMessage({
-    type: 'compute' + String(party_id),
-    input: arr
+
+  $('#processButton').attr('disabled', true);
+  $('#output').append('<p>Starting...</p>');
+
+  // eslint-disable-next-line no-undef
+  var promise = mpc.compute(arr);
+  promise.then(function (opened_array) {
+    var results = {
+      sum: opened_array[0],
+      product: opened_array[1]
+    };
+    handleResult(results);
   });
 }
 
-worker.onmessage = function (e) {
-  if ($('#output').is(':empty') && (e.data.type === 'result1' || e.data.type === 'result2')) {
-    $('#output').append('<p>The sum is ' + e.data.result[0] + ' and the inner product is ' + e.data.result[1] + '.</p>');
-    $('#button').attr('disabled', false);
-  }
-};
+function handleResult(results) {
+  $('#output').append('<p>The sum is ' + results.sum + ' and the inner product is ' + results.product + '.</p>');
+  $('#button').attr('disabled', false);
+}

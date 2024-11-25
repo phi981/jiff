@@ -1,15 +1,23 @@
+/**
+ * Do not modify this file unless you have to.
+ * This file has UI handlers.
+ */
+
+/* global mpc */
+
+// eslint-disable-next-line no-unused-vars
 function connect() {
   $('#connectButton').prop('disabled', true);
   var computation_id = $('#computation_id').val();
   var party_count = parseInt($('#count').val());
 
   if (isNaN(party_count)) {
-    $('#output').append("<p class='error'>Party count must be a valid number!</p>");
+    $('#output').append('<p class=\'error\'>Party count must be a valid number!</p>');
     $('#connectButton').prop('disabled', false);
   } else {
-    var options = { party_count: party_count };
+    var options = {party_count: party_count};
     options.onError = function (error) {
-      $('#output').append("<p class='error'>" + error + '</p>');
+      $('#output').append('<p class=\'error\'>' + error + '</p>');
     };
     options.onConnect = function () {
       $('#button').attr('disabled', false);
@@ -36,13 +44,14 @@ function connect() {
   }
 }
 
+// eslint-disable-next-line no-unused-vars
 function submit() {
   var input = parseInt($('#number').val());
 
   if (isNaN(input)) {
-    $('#output').append("<p class='error'>Input a valid number!</p>");
+    $('#output').append('<p class=\'error\'>Input a valid number!</p>');
   } else if (100 < input || input < 0 || input !== Math.floor(input)) {
-    $('#output').append("<p class='error'>Input a WHOLE number between 0 and 100!</p>");
+    $('#output').append('<p class=\'error\'>Input a WHOLE number between 0 and 100!</p>');
   } else {
     $('#button').attr('disabled', true);
     $('#output').append('<p>Starting...</p>');

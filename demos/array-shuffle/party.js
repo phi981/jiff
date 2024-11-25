@@ -6,32 +6,32 @@
 
 console.log('Command line arguments: <input> [<party count> [<computation_id> [<party id>]]]]');
 
-const mpc = require('./mpc');
+var mpc = require('./mpc');
 
 // Read Command line arguments
-const input = parseInt(process.argv[2]);
+var input = parseInt(process.argv[2]);
 
-let party_count = process.argv[3];
+var party_count = process.argv[3];
 if (party_count == null) {
   party_count = 2;
 } else {
   party_count = parseInt(party_count);
 }
 
-let computation_id = process.argv[4];
+var computation_id = process.argv[4];
 if (computation_id == null) {
   computation_id = 'test';
 }
 
-let party_id = process.argv[5];
+var party_id = process.argv[5];
 if (party_id != null) {
   party_id = parseInt(party_id, 10);
 }
 
 // JIFF options
-const options = { party_count: party_count, party_id: party_id };
+var options = {party_count: party_count, party_id: party_id};
 options.onConnect = function (jiff_instance) {
-  const promise = mpc.compute(input);
+  var promise = mpc.compute(input);
 
   promise.then(function (v) {
     console.log(v);
